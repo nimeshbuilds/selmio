@@ -8,6 +8,7 @@ This checkout was exercised with synthetic data only. These checks do not establ
 - `npm run typecheck`: TypeScript compilation passed.
 - `npm run lint`: ESLint passed with no warnings.
 - `npm run build`: production build completed. Vinext reports an informational limitation in automatic route classification.
+- `npm run build:pages`: static production build completed with assets and fonts rooted under `/selmio/`.
 
 ## Browser checks
 
@@ -21,6 +22,7 @@ Tested the running local application in the Codex browser at desktop size and a 
 - Two tabs editing one workspace: the second tab pauses saving, preserves its unsaved copy, and can open the newer saved version.
 - Mobile navigation, transaction layout, and the scrolling purchase dialog; the page had no horizontal overflow at 390 pixels.
 - The one-command local launcher starts the app on `127.0.0.1:3000` with bank connection correctly shown as unconfigured.
+- The static Pages build renders the shared interface, evaluates the uncertain purchase case, persists review answers after reload, and loads its imagery and font from the project URL prefix. Its bank dialog explains the local-app requirement and disables Plaid connections; no connector is called in this build.
 
 Screenshots: [dashboard](screenshots/selmio-overview.jpg), [purchase decision](screenshots/selmio-purchase.jpg).
 

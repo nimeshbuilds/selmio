@@ -74,6 +74,12 @@ import {
 } from "@/lib/plaid-normalize";
 import CashChart from "./chart";
 
+const STATIC_PREVIEW = process.env.NEXT_PUBLIC_STATIC_PREVIEW === "true";
+const ASSET_BASE = (process.env.NEXT_PUBLIC_BASE_PATH ?? "").replace(/\/$/, "");
+const assetPath = (path: string) => `${ASSET_BASE}${path}`;
+const STATIC_BANK_MESSAGE =
+  "Bank linking is available in the local app. This web preview supports manual accounts and CSV imports, with your workspace saved in this browser.";
+
 const currency = (n: number, decimals = false) =>
   new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -124,6 +130,14 @@ type BankStatus = {
 };
 
 async function readBankStatus(): Promise<BankStatus> {
+  if (STATIC_PREVIEW)
+    return {
+      configured: false,
+      available: false,
+      environment: null,
+      connected: false,
+      reason: STATIC_BANK_MESSAGE,
+    };
   try {
     const res = await fetch("/api/plaid/status");
     if (!res.ok) throw new Error();
@@ -476,6 +490,7 @@ export default function SelmioApp() {
     path: string,
     body: unknown = {},
   ): Promise<Record<string, unknown>> => {
+    if (STATIC_PREVIEW) throw new Error(STATIC_BANK_MESSAGE);
     const res = await fetch(`/api/plaid/${path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -502,6 +517,10 @@ export default function SelmioApp() {
     }
   };
   const connectBank = async (itemId?: string, resume = false) => {
+    if (STATIC_PREVIEW) {
+      setBankError(STATIC_BANK_MESSAGE);
+      return;
+    }
     setBankBusy(true);
     setBankError("");
     try {
@@ -617,6 +636,7 @@ export default function SelmioApp() {
   });
   useEffect(() => {
     if (
+      !STATIC_PREVIEW &&
       ready &&
       !resumedOAuth.current &&
       new URLSearchParams(window.location.search).has("oauth_state_id")
@@ -796,7 +816,7 @@ export default function SelmioApp() {
           aria-label="Selmio home"
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- Local offline SVG; preserve native asset rendering without an optimizer. */}
-          <img src="/brand/selmio-mark.svg" alt="" />
+          <img src={assetPath("/brand/selmio-mark.svg")} alt="" />
           <span>
             selmio<span className="brand-period">.</span>
           </span>
@@ -967,6 +987,18 @@ export default function SelmioApp() {
               {dateLabel(base?.endDate ?? summary.horizonEndDate)}
             </span>
           </div>
+          {STATIC_PREVIEW && (
+            <div className="demo-banner preview-banner">
+              <span>
+                <FlaskConical size={15} />
+                <strong>Web preview.</strong> Bank linking runs in the local app.
+                Your workspace stays in this browser.
+              </span>
+              <a href="https://github.com/nimeshbuilds/selmio#run" target="_blank" rel="noreferrer">
+                Get the local app <ArrowUpRight size={14} />
+              </a>
+            </div>
+          )}
           {storageError && (
             <div className="storage-warning" role="alert">
               <CircleHelp size={18} />
@@ -1075,7 +1107,7 @@ export default function SelmioApp() {
                   {/* eslint-disable-next-line @next/next/no-img-element -- Local brand artwork; preserve the existing layout and offline rendering. */}
                   <img
                     className="sculpture"
-                    src="/brand/selmio-sculpture.png"
+                    src={assetPath("/brand/selmio-sculpture.png")}
                     alt="A pale green sculptural ribbon unfolding into two open loops"
                   />
                   <div className="life-card-copy">
@@ -1646,7 +1678,7 @@ export default function SelmioApp() {
                 </p>
                 <div className="brand-mini">
                   {/* eslint-disable-next-line @next/next/no-img-element -- Local offline SVG; no optimizer is needed. */}
-                  <img src="/brand/selmio-mark.svg" alt="" />
+                  <img src={assetPath("/brand/selmio-mark.svg")} alt="" />
                   <strong>selmio.</strong>
                   <span>Know what fits.</span>
                 </div>
@@ -1660,9 +1692,9 @@ export default function SelmioApp() {
               <section className="panel settings-panel">
                 <h2>Bank connections</h2>
                 <p>
-                  Use the managed-style Plaid flow when a connector is
-                  configured. Self-hosters can configure their own connector and
-                  credentials.
+                  {STATIC_PREVIEW
+                    ? STATIC_BANK_MESSAGE
+                    : "Use the Plaid flow when a connector is configured. Self-hosters can configure their own connector and credentials."}
                 </p>
                 <button
                   className="btn primary"
@@ -1677,7 +1709,7 @@ export default function SelmioApp() {
           <footer className="page-footer">
             <span>
               {/* eslint-disable-next-line @next/next/no-img-element -- Local offline SVG; no optimizer is needed. */}
-              <img src="/brand/selmio-mark.svg" alt="" />A little more room for
+              <img src={assetPath("/brand/selmio-mark.svg")} alt="" />A little more room for
               living.
             </span>
             <span>
@@ -2055,14 +2087,15 @@ export default function SelmioApp() {
           onClose={() => setModal(null)}
         >
           <p className="modal-intro">
-            Connect your bank securely through Plaid, or start with a statement.
-            Your budget stays in your local workspace.
+            {STATIC_PREVIEW
+              ? "Add your accounts or import a statement to begin. Bank linking is available when you run Selmio locally."
+              : "Connect your bank through Plaid, or start with a statement. Your budget stays in your local workspace."}
           </p>
           <div className="bank-art">
             <Landmark size={35} />
             <span>•••</span>
             {/* eslint-disable-next-line @next/next/no-img-element -- Local offline SVG; no optimizer is needed. */}
-            <img src="/brand/selmio-mark.svg" alt="Selmio" />
+            <img src={assetPath("/brand/selmio-mark.svg")} alt="Selmio" />
           </div>
           <div className="connection-benefits">
             <span>
@@ -2087,10 +2120,10 @@ export default function SelmioApp() {
             <div className="connector-status">
               <CircleHelp size={18} />
               <div>
-                <strong>Bank connection needs setup</strong>
+                <strong>{STATIC_PREVIEW ? "Bank linking is available in the local app" : "Bank connection needs setup"}</strong>
                 <p>
                   {
-                    "Bank connections are not enabled in this installation yet. You can add an account or import a statement now."
+                    bankStatus.reason || "Bank connections are not enabled in this installation yet. You can add an account or import a statement now."
                   }
                 </p>
               </div>

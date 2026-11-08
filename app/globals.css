@@ -19,6 +19,25 @@
   --radius: 18px;
   color-scheme: light;
 }
+.preview-banner {
+  background: #edf0e8;
+  gap: 16px;
+}
+.preview-banner > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  color: var(--forest);
+  font-size: 11px;
+  text-decoration: none;
+}
+@media (max-width: 760px) {
+  .preview-banner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+}
 * {
   box-sizing: border-box;
 }

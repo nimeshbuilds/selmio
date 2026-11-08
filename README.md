@@ -6,6 +6,19 @@ Selmio is an MIT-licensed local budgeting application. It makes dated spending d
 
 ![Selmio dashboard with fictional accounts and a dated cash forecast](docs/screenshots/selmio-overview.jpg)
 
+## Web preview
+
+Try [Selmio on GitHub Pages](https://nimeshbuilds.github.io/selmio/). The browser version includes the budgeting tools, manual accounts, CSV import, and JSON backups. Workspaces stay in your browser and are not encrypted. Bank linking requires the local app and its private connector.
+
+The [Pages workflow](.github/workflows/pages.yml) checks and publishes the static app after pushes to `main`. To build and preview the same static version locally:
+
+```sh
+npm run build:pages
+npm run preview:pages
+```
+
+Open **http://127.0.0.1:4175/selmio/**. The static entry is in `web-preview/`; it reuses the same interface and financial engine. Its build excludes the server routes and disables bank requests. Set `PAGES_BASE_PATH` when publishing under a different URL prefix.
+
 ## Run
 
 Requires Node.js 22.13 or newer and npm.
