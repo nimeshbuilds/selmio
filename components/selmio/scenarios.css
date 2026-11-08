@@ -1,0 +1,834 @@
+.scenario-gallery,
+.scenario-coach {
+  --scenario-forest: #27483c;
+  --scenario-ink: #273e34;
+  --scenario-muted: #657061;
+  --scenario-line: #e1e6d9;
+  color: var(--scenario-ink);
+}
+
+.scenario-gallery-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 32px;
+  align-items: center;
+  padding: 30px 34px;
+  border: 1px solid #dce4ce;
+  border-radius: 22px;
+  background: linear-gradient(115deg, #edf2df 0%, #f1f4e9 65%, #f7f7f0 100%);
+}
+
+.scenario-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--scenario-forest);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 1.2px;
+  line-height: 1.5;
+}
+
+.scenario-gallery-intro h2 {
+  max-width: 620px;
+  margin: 13px 0 12px;
+  font-size: clamp(25px, 2.7vw, 37px);
+  font-weight: 550;
+  line-height: 1.2;
+  letter-spacing: -1.4px;
+}
+
+.scenario-gallery-intro-copy > p {
+  max-width: 540px;
+  color: #65705d;
+  font-size: 13px;
+  line-height: 1.85;
+}
+
+.scenario-isolation-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 20px;
+  color: #4c6247;
+  font-size: 10px;
+  font-weight: 550;
+  line-height: 1.6;
+}
+
+.scenario-gallery-progress {
+  border-left: 1px solid #d6dfca;
+  padding: 9px 0 9px 29px;
+}
+
+.scenario-gallery-progress > div {
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.scenario-gallery-progress strong {
+  font-size: 47px;
+  font-weight: 550;
+  letter-spacing: -2px;
+}
+
+.scenario-gallery-progress > div > span {
+  color: #75836a;
+  font-size: 21px;
+  letter-spacing: -0.7px;
+}
+
+.scenario-gallery-progress > p {
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.scenario-gallery-progress > span {
+  display: block;
+  color: #68755f;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.scenario-gallery-progress progress {
+  display: block;
+  width: 100%;
+  height: 5px;
+  margin: 17px 0 9px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 10px;
+  background: #dfe6d3;
+  accent-color: var(--scenario-forest);
+}
+
+.scenario-gallery-progress progress::-webkit-progress-bar {
+  border-radius: 10px;
+  background: #dfe6d3;
+}
+
+.scenario-gallery-progress progress::-webkit-progress-value {
+  border-radius: 10px;
+  background: var(--scenario-forest);
+}
+
+.scenario-gallery-progress progress::-moz-progress-bar {
+  border-radius: 10px;
+  background: var(--scenario-forest);
+}
+
+.scenario-gallery-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin: 30px 0 16px;
+}
+
+.scenario-gallery-heading h3 {
+  font-size: 16px;
+  font-weight: 650;
+  letter-spacing: -0.4px;
+}
+
+.scenario-gallery-heading > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--scenario-muted);
+  font-size: 10px;
+}
+
+.scenario-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 17px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scenario-gallery-grid > li {
+  min-width: 0;
+}
+
+.scenario-card {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  padding: 23px;
+  border: 1px solid var(--scenario-line);
+  border-radius: 18px;
+  background: #fff;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.scenario-card:focus-within,
+.scenario-card:hover {
+  border-color: #b8c8ab;
+  box-shadow: 0 5px 18px #27483c06;
+}
+
+.scenario-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.scenario-card-icon {
+  display: grid;
+  width: 43px;
+  height: 43px;
+  place-items: center;
+  border-radius: 13px;
+  background: #eaf0dc;
+  color: var(--scenario-forest);
+}
+
+.scenario-card-tone-1 .scenario-card-icon {
+  background: #f7e9dd;
+  color: #8b6250;
+}
+
+.scenario-card-tone-2 .scenario-card-icon {
+  background: #ece9f6;
+  color: #746389;
+}
+
+.scenario-card-number {
+  color: #929b89;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 550;
+  letter-spacing: 1px;
+}
+
+.scenario-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px 12px;
+  margin-bottom: 10px;
+  color: var(--scenario-muted);
+  font-size: 10px;
+}
+
+.scenario-card-meta > span:first-child {
+  color: #546947;
+  font-weight: 650;
+}
+
+.scenario-card h4 {
+  margin: 0 0 11px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.55px;
+}
+
+.scenario-card-summary {
+  flex: 1;
+  color: var(--scenario-muted);
+  font-size: 11px;
+  line-height: 1.9;
+}
+
+.scenario-card-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 21px 0;
+  padding-top: 17px;
+  border-top: 1px solid #edf0e7;
+}
+
+.scenario-card-facts dt {
+  margin-bottom: 5px;
+  color: var(--scenario-muted);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.scenario-card-facts dd {
+  margin: 0;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+}
+
+.scenario-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.scenario-button {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 13px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.scenario-button-primary {
+  background: var(--scenario-forest);
+  color: #f7f9ef;
+}
+
+.scenario-button-primary:hover:not(:disabled) {
+  background: #385a45;
+}
+
+.scenario-button-secondary {
+  border-color: #dfe5d6;
+  background: #fff;
+  color: var(--scenario-forest);
+}
+
+.scenario-button-secondary:hover:not(:disabled) {
+  border-color: #b8c8ab;
+  background: #f7f9f1;
+}
+
+.scenario-text-button {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 0;
+  color: #48613d;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.scenario-text-button:hover {
+  color: #263c21;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.scenario-csv-download {
+  align-self: flex-start;
+  margin-top: 9px;
+}
+
+.scenario-explored-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #4c6a3d;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.scenario-gallery-footnote {
+  max-width: 640px;
+  margin-top: 21px;
+  color: var(--scenario-muted);
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+.scenario-coach {
+  margin-bottom: 22px;
+  overflow: hidden;
+  border: 1px solid #d6dfc9;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.scenario-coach-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 22px;
+  border-bottom: 1px solid #e0e7d4;
+  background: #eef3e2;
+}
+
+.scenario-coach-isolation {
+  color: #65735b;
+  font-size: 10px;
+}
+
+.scenario-coach-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px 22px;
+  padding: 17px 22px 13px;
+}
+
+.scenario-step-header {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.scenario-current-title {
+  margin-bottom: 5px;
+  color: var(--scenario-muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.scenario-step-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.6px;
+}
+
+.scenario-step-count {
+  flex-shrink: 0;
+  margin-top: 3px;
+  padding: 5px 8px;
+  border: 1px solid #e3e9d9;
+  border-radius: 6px;
+  color: #5b6c51;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+}
+
+.scenario-step-progress {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 5px;
+  background: #e4eadc;
+  accent-color: var(--scenario-forest);
+}
+
+.scenario-step-progress::-webkit-progress-bar {
+  background: #e4eadc;
+}
+
+.scenario-step-progress::-webkit-progress-value {
+  border-radius: 5px;
+  background: var(--scenario-forest);
+}
+
+.scenario-step-progress::-moz-progress-bar {
+  border-radius: 5px;
+  background: var(--scenario-forest);
+}
+
+.scenario-step-instruction {
+  align-self: center;
+  margin: 0;
+  color: #53634b;
+  font-size: 12px;
+  line-height: 1.85;
+}
+
+.scenario-step-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 14px;
+  border-radius: 10px;
+  background: #f5f7ef;
+  color: #587044;
+}
+
+.scenario-step-check > svg {
+  margin-top: 2px;
+}
+
+.scenario-step-check strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #40573a;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.scenario-step-check p {
+  color: #617057;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.scenario-step-actions {
+  display: flex;
+  grid-column: 1 / -1;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 1px;
+}
+
+.scenario-step-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+
+.scenario-manual-note {
+  display: block;
+  grid-column: 1 / -1;
+  margin-top: 0;
+  color: #6e7766;
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+.scenario-coach-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 20px;
+  padding: 9px 22px;
+  border-top: 1px solid #e9eddf;
+}
+
+.scenario-coach-footer > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+}
+
+.scenario-coach-complete {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: flex-start;
+  gap: 13px 16px;
+  padding: 23px;
+  background: linear-gradient(115deg, #f1f5e7, #fbfcf7);
+}
+
+.scenario-completion-icon {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid #dbe6ca;
+  border-radius: 15px;
+  background: #e4edce;
+  color: #42613a;
+}
+
+.scenario-completion-copy h2 {
+  margin-top: 5px;
+  font-size: 24px;
+  font-weight: 550;
+  letter-spacing: -0.8px;
+  line-height: 1.4;
+}
+
+.scenario-completed-title {
+  margin-top: 5px;
+  color: #4c6244;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.7;
+}
+
+.scenario-lesson {
+  max-width: 680px;
+  margin-top: 12px;
+  color: #5c6c53;
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+.scenario-completion-actions {
+  display: flex;
+  grid-column: 2;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin-top: 3px;
+}
+
+.scenario-coach-compact {
+  margin-bottom: 20px;
+  border-radius: 12px;
+}
+
+.scenario-coach-compact .scenario-coach-header {
+  padding: 9px 14px;
+}
+
+.scenario-coach-compact .scenario-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.8px;
+}
+
+.scenario-coach-compact .scenario-coach-body {
+  display: block;
+  padding: 12px 14px;
+}
+
+.scenario-coach-compact .scenario-current-title {
+  display: none;
+}
+
+.scenario-coach-compact .scenario-step-header h2 {
+  font-size: 15px;
+  letter-spacing: -0.3px;
+}
+
+.scenario-coach-compact .scenario-step-count {
+  margin-top: 0;
+  padding: 3px 6px;
+  font-size: 9px;
+}
+
+.scenario-coach-compact .scenario-step-instruction {
+  margin: 8px 0;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.scenario-coach-compact .scenario-step-check {
+  gap: 8px;
+  padding: 7px 9px;
+}
+
+.scenario-coach-compact .scenario-step-check strong {
+  font-size: 9px;
+}
+
+.scenario-coach-compact .scenario-step-check p {
+  font-size: 10px;
+  line-height: 1.75;
+}
+
+.scenario-coach-compact .scenario-step-actions {
+  justify-content: flex-end;
+  margin-top: 9px;
+}
+
+.scenario-coach-compact .scenario-button {
+  min-height: 34px;
+  padding: 7px 10px;
+  font-size: 10px;
+}
+
+.scenario-coach-compact .scenario-manual-note {
+  display: none;
+}
+
+.scenario-coach-compact.scenario-coach-complete {
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  padding: 14px;
+}
+
+.scenario-coach-compact .scenario-completion-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+}
+
+.scenario-coach-compact .scenario-completion-copy h2 {
+  font-size: 19px;
+}
+
+.scenario-coach-compact .scenario-lesson {
+  margin-top: 8px;
+  font-size: 11px;
+}
+
+@media (max-width: 1100px) {
+  .scenario-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .scenario-gallery-intro {
+    grid-template-columns: minmax(0, 1fr) 175px;
+    gap: 24px;
+    padding: 26px;
+  }
+}
+
+@media (max-width: 650px) {
+  .scenario-gallery-intro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+    padding: 24px 21px;
+    border-radius: 17px;
+  }
+
+  .scenario-gallery-intro h2 {
+    font-size: 28px;
+    letter-spacing: -1px;
+  }
+
+  .scenario-gallery-progress {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0 17px;
+    padding: 19px 0 0;
+    border-top: 1px solid #d6dfca;
+    border-left: 0;
+  }
+
+  .scenario-gallery-progress > div {
+    grid-row: 1 / 3;
+  }
+
+  .scenario-gallery-progress strong {
+    font-size: 37px;
+  }
+
+  .scenario-gallery-progress > p {
+    margin-top: 0;
+  }
+
+  .scenario-gallery-progress progress {
+    margin: 10px 0 0;
+  }
+
+  .scenario-gallery-progress > span {
+    grid-column: 2;
+    margin-top: 5px;
+    font-size: 9px;
+  }
+
+  .scenario-gallery-heading {
+    margin-top: 24px;
+  }
+
+  .scenario-gallery-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 13px;
+  }
+
+  .scenario-card {
+    padding: 21px;
+  }
+
+  .scenario-card-summary {
+    font-size: 12px;
+  }
+
+  .scenario-card-actions > .scenario-button {
+    flex: 1;
+    justify-content: space-between;
+  }
+
+  .scenario-coach-header {
+    padding-right: 17px;
+    padding-left: 17px;
+  }
+
+  .scenario-coach-body {
+    display: block;
+    padding: 17px;
+  }
+
+  .scenario-step-progress {
+    display: block;
+    margin: 12px 0;
+  }
+
+  .scenario-step-instruction {
+    margin: 12px 0;
+  }
+
+  .scenario-step-header {
+    gap: 10px;
+  }
+
+  .scenario-step-header h2 {
+    font-size: 18px;
+  }
+
+  .scenario-step-count {
+    padding: 4px 6px;
+    font-size: 9px;
+  }
+
+  .scenario-step-actions {
+    align-items: stretch;
+    flex-direction: column;
+    margin-top: 14px;
+  }
+
+  .scenario-manual-note {
+    margin-top: 10px;
+  }
+
+  .scenario-step-navigation {
+    justify-content: flex-end;
+  }
+
+  .scenario-coach-footer {
+    padding-right: 17px;
+    padding-left: 17px;
+  }
+
+  .scenario-coach-footer > div {
+    gap: 6px 14px;
+  }
+
+  .scenario-coach-complete {
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 12px;
+    padding: 19px 17px;
+  }
+
+  .scenario-completion-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+
+  .scenario-completion-icon > svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .scenario-completion-copy h2 {
+    font-size: 21px;
+  }
+
+  .scenario-completion-actions {
+    grid-column: 1 / -1;
+    gap: 8px 14px;
+    margin-top: 7px;
+  }
+
+  .scenario-coach-compact .scenario-step-actions {
+    align-items: flex-end;
+  }
+
+  .scenario-coach-compact .scenario-step-header h2 {
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scenario-card,
+  .scenario-button {
+    transition: none;
+  }
+}

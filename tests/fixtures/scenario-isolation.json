@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "mode": "personal",
+  "accounts": [{ "id": "qa-personal-checking", "name": "QA personal checking", "institution": "Synthetic test data", "type": "checking", "balanceCents": 987654, "lastUpdated": "2026-11-07" }],
+  "transactions": [],
+  "commitments": [{ "id": "qa-monthly-bill", "name": "QA monthly bill", "amountCents": 12345, "dueDate": "2026-11-15", "accountId": "qa-personal-checking", "kind": "bill", "confirmed": true }],
+  "ambiguities": [],
+  "bufferCents": 87500
+}

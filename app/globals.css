@@ -32,6 +32,27 @@
   font-size: 11px;
   text-decoration: none;
 }
+.preview-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.preview-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--forest);
+  font-size: 11px;
+  text-decoration: none;
+}
+.setting-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
 @media (max-width: 760px) {
   .preview-banner {
     align-items: flex-start;

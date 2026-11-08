@@ -4,6 +4,7 @@ import {
   useEffect,
   useEffectEvent,
   useMemo,
+  useReducer,
   useRef,
   useState,
   type ReactNode,
@@ -57,7 +58,6 @@ import {
   createEmptyWorkspace,
   summarizeWorkspace,
   resolveAmbiguity,
-  type Workspace,
   type Account,
   type Commitment,
   type Transaction,
@@ -73,6 +73,10 @@ import {
   mergePlaidSnapshot,
 } from "@/lib/plaid-normalize";
 import CashChart from "./chart";
+import { BUDGET_SCENARIOS, type ScenarioAction, type ScenarioPage } from "@/lib/scenarios";
+import { practiceWorkspaceReducer, type LocalWorkspace, type WorkspaceUpdate } from "@/lib/practice-workspace";
+import { ScenarioGallery, ScenarioCoach, ScenarioGuideContext } from "./scenarios";
+import "./scenarios.css";
 
 const STATIC_PREVIEW = process.env.NEXT_PUBLIC_STATIC_PREVIEW === "true";
 const ASSET_BASE = (process.env.NEXT_PUBLIC_BASE_PATH ?? "").replace(/\/$/, "");
@@ -103,13 +107,7 @@ const parseMoney = (s: string) => {
     throw new Error("That amount is too large.");
   return n;
 };
-type LocalWorkspace = Workspace & { sourceWarnings?: string[] };
-type PageName =
-  | "Overview"
-  | "Transactions"
-  | "Your plan"
-  | "Accounts"
-  | "Settings";
+type PageName = ScenarioPage | "Scenarios";
 type ModalName =
   | "connect"
   | "decision"
@@ -217,6 +215,7 @@ function Modal({
             <X size={20} />
           </button>
         </div>
+        <ScenarioCoach compact />
         {children}
       </div>
     </dialog>
@@ -275,13 +274,17 @@ function MerchantIcon({ name, category }: { name: string; category: string }) {
 }
 
 export default function SelmioApp() {
-  const [workspace, setWorkspace] = useState<LocalWorkspace>(() =>
-    createDemoWorkspace(),
-  );
-  const workspaceRef = useRef(workspace);
+  const [workspaceState, dispatchWorkspace] = useReducer(practiceWorkspaceReducer, undefined, () => ({ personal: createDemoWorkspace(), practice: null }));
+  const { personal: personalWorkspace, practice } = workspaceState;
+  const workspace = practice?.workspace ?? personalWorkspace;
+  const setWorkspace = (update: WorkspaceUpdate) => dispatchWorkspace({ type: "edit", sessionId: practice?.sessionId ?? null, update });
+  const personalWorkspaceRef = useRef<LocalWorkspace>(personalWorkspace);
   useEffect(() => {
-    workspaceRef.current = workspace;
-  }, [workspace]);
+    personalWorkspaceRef.current = personalWorkspace;
+  }, [personalWorkspace]);
+  const [exploredIds, setExploredIds] = useState<string[]>([]);
+  const [practiceCopy, setPracticeCopy] = useState<{ sessionId: string; workspace: LocalWorkspace } | null>(null);
+  const activeScenario = practice ? BUDGET_SCENARIOS.find(scenario => scenario.id === practice.scenarioId) : undefined;
   const [ready, setReady] = useState(false),
     [storageError, setStorageError] = useState(false),
     [storageAvailable, setStorageAvailable] = useState(true);
@@ -311,13 +314,17 @@ export default function SelmioApp() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       lastStorageRef.current = saved;
-      if (saved) setWorkspace(validateWorkspace(JSON.parse(saved)));
+      if (saved) dispatchWorkspace({ type: "replace-personal", workspace: validateWorkspace(JSON.parse(saved)) });
     } catch {
       setStorageError(true);
       setToast(
         "Your saved workspace could not be opened. It has not been overwritten.",
       );
     }
+    try {
+      const explored: unknown = JSON.parse(localStorage.getItem("selmio.scenarios.explored.v1") || "[]");
+      if (Array.isArray(explored)) setExploredIds(explored.filter((value): value is string => typeof value === "string" && BUDGET_SCENARIOS.some(scenario => scenario.id === value)));
+    } catch { /* Optional practice progress does not affect personal data. */ }
     setReady(true);
   }, []);
   /* eslint-enable react-hooks/set-state-in-effect */
@@ -350,7 +357,7 @@ export default function SelmioApp() {
           );
           return;
         }
-        const serialized = JSON.stringify(workspace);
+        const serialized = JSON.stringify(personalWorkspace);
         localStorage.setItem(STORAGE_KEY, serialized);
         lastStorageRef.current = serialized;
         setStorageAvailable(true);
@@ -369,7 +376,7 @@ export default function SelmioApp() {
     return () => {
       cancelled = true;
     };
-  }, [workspace, ready, storageError]);
+  }, [personalWorkspace, ready, storageError]);
   const openSavedVersion = () => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -379,7 +386,7 @@ export default function SelmioApp() {
         );
       const next = validateWorkspace(JSON.parse(raw));
       lastStorageRef.current = raw;
-      setWorkspace(next);
+      dispatchWorkspace({ type: "replace-personal", workspace: next });
       setStorageError(false);
       setStorageAvailable(true);
       notify("Opened the latest saved workspace.");
@@ -456,6 +463,60 @@ export default function SelmioApp() {
   const navigate = (next: PageName) => {
     setPage(next);
     setMobileNav(false);
+    window.scrollTo(0, 0);
+  };
+  const runScenarioAction = (action: ScenarioAction) => {
+    setPage(action.page ?? "Overview");
+    setMobileNav(false);
+    window.scrollTo(0, 0);
+    setModal(action.modal ?? null);
+    if (action.accountId) setSelectedAccount(action.accountId);
+    if (action.purchase) {
+      setPurchaseAmount(action.purchase.amount);
+      setPurchaseDate(action.purchase.date);
+      setSelectedAccount(action.purchase.accountId);
+    }
+  };
+  const startScenario = (scenarioId: string) => {
+    const scenario = BUDGET_SCENARIOS.find(item => item.id === scenarioId);
+    if (!scenario) return;
+    dispatchWorkspace({ type: "start", scenarioId, sessionId: id(), workspace: scenario.workspace });
+    setPracticeCopy(null);
+    const purchase = scenario.steps.find(step => step.action.purchase)?.action.purchase;
+    setSelectedAccount(purchase?.accountId ?? scenario.workspace.accounts.find(account => account.type !== "credit")?.id ?? "");
+    setPurchaseAmount(purchase?.amount ?? "600");
+    setPurchaseDate(purchase?.date ?? scenario.workspace.accounts[0]?.lastUpdated.slice(0, 10) ?? "2026-11-07");
+    setQuery("");
+    setTxFilter("All activity");
+    setChartDays(24);
+    setReviewId(null);
+    setEditingAccount(null);
+    setEditingCommitment(null);
+    setModal(null);
+    navigate(scenario.steps[0]?.action.page ?? "Overview");
+    setToast("");
+  };
+  const changeScenarioStep = (index: number) => {
+    if (!activeScenario) return;
+    const stepIndex = Math.max(0, Math.min(activeScenario.steps.length, index));
+    dispatchWorkspace({ type: "step", stepIndex });
+    if (stepIndex === activeScenario.steps.length) {
+      setModal(null);
+      navigate("Scenarios");
+      const next = [...new Set([...exploredIds, activeScenario.id])];
+      setExploredIds(next);
+      try { localStorage.setItem("selmio.scenarios.explored.v1", JSON.stringify(next)); } catch { /* Progress remains available for this visit. */ }
+    } else runScenarioAction(activeScenario.steps[stepIndex].action);
+  };
+  const exitScenario = () => {
+    dispatchWorkspace({ type: "exit" });
+    setPracticeCopy(null);
+    setModal(null);
+    setSelectedAccount("");
+    setQuery("");
+    setTxFilter("All activity");
+    navigate("Overview");
+    notify("Back to your workspace. Practice changes were kept separate.");
   };
   const refreshBankStatus = async () => {
     setBankStatus(await readBankStatus());
@@ -473,7 +534,7 @@ export default function SelmioApp() {
   const applyBankSnapshot = (input: unknown) => {
     const snapshot = normalizePlaidSnapshot(input);
     if (snapshot.accounts.length) {
-      const merged = mergePlaidSnapshot(workspaceRef.current, snapshot);
+      const merged = mergePlaidSnapshot(personalWorkspaceRef.current, snapshot);
       setWorkspace({ ...merged.workspace, sourceWarnings: merged.warnings });
       setPurchaseDate(today());
       notify(
@@ -490,6 +551,7 @@ export default function SelmioApp() {
     path: string,
     body: unknown = {},
   ): Promise<Record<string, unknown>> => {
+    if (practice) throw new Error("Exit practice before connecting your bank.");
     if (STATIC_PREVIEW) throw new Error(STATIC_BANK_MESSAGE);
     const res = await fetch(`/api/plaid/${path}`, {
       method: "POST",
@@ -517,6 +579,10 @@ export default function SelmioApp() {
     }
   };
   const connectBank = async (itemId?: string, resume = false) => {
+    if (practice) {
+      setBankError("Exit practice before connecting your bank.");
+      return;
+    }
     if (STATIC_PREVIEW) {
       setBankError(STATIC_BANK_MESSAGE);
       return;
@@ -679,10 +745,10 @@ export default function SelmioApp() {
   };
   const backup = () => {
     downloadFile(
-      `selmio-${workspace.mode}-${today()}.json`,
+      `selmio-${practice ? `practice-${practice.scenarioId}` : workspace.mode}-${today()}.json`,
       JSON.stringify(workspace, null, 2),
     );
-    notify("Workspace backup exported. Keep it somewhere private.");
+    notify(practice ? "Practice backup exported. Your personal workspace is unchanged." : "Workspace backup exported. Keep it somewhere private.");
   };
   const restore = async (file?: File) => {
     if (!file) return;
@@ -691,6 +757,11 @@ export default function SelmioApp() {
         throw new Error("Choose a backup smaller than 10 MB.");
       const restored = validateWorkspace(JSON.parse(await file.text()));
       setWorkspace(restored);
+      if (practice) {
+        if (restoreRef.current) restoreRef.current.value = "";
+        notify("Practice backup restored. Your personal workspace is unchanged.");
+        return;
+      }
       const canSave = captureStorageBaseline();
       setStorageError(false);
       notify(
@@ -729,6 +800,7 @@ export default function SelmioApp() {
   const room = base?.conservativeRoomCents ?? 0;
   const nav = [
     { name: "Overview" as PageName, icon: LayoutGrid },
+    { name: "Scenarios" as PageName, icon: FlaskConical },
     { name: "Transactions" as PageName, icon: ArrowLeftRight },
     { name: "Your plan" as PageName, icon: Target },
     { name: "Accounts" as PageName, icon: Wallet },
@@ -801,6 +873,15 @@ export default function SelmioApp() {
     </div>
   );
   return (
+    <ScenarioGuideContext.Provider value={practice && activeScenario ? {
+      scenario: activeScenario,
+      stepIndex: practice.stepIndex,
+      onStepChange: changeScenarioStep,
+      onLaunch: () => { const step = activeScenario.steps[practice.stepIndex]; if (step) runScenarioAction(step.action); },
+      onExit: exitScenario,
+      onReset: () => startScenario(activeScenario.id),
+      onBrowse: () => { setModal(null); navigate("Scenarios"); },
+    } : null}>
     <div className="app-shell">
       {mobileNav && (
         <button
@@ -831,11 +912,11 @@ export default function SelmioApp() {
           </span>
           <div>
             <strong>
-              {workspace.mode === "demo"
+              {practice ? "Practice space" : workspace.mode === "demo"
                 ? "The demo space"
                 : "My personal space"}
             </strong>
-            <small>Personal workspace</small>
+            <small>{practice ? "Your workspace is separate" : "Personal workspace"}</small>
           </div>
           <ChevronDown size={14} />
         </div>
@@ -849,6 +930,7 @@ export default function SelmioApp() {
             >
               <n.icon size={18} />
               {n.name}
+              {n.name === "Scenarios" && <span className="nav-count">10</span>}
               {n.name === "Your plan" && unresolved.length > 0 && (
                 <span className="nav-count">{unresolved.length}</span>
               )}
@@ -900,14 +982,14 @@ export default function SelmioApp() {
             >
               <Menu size={20} />
             </button>
-            <span>My workspace</span>
+            <span>{practice ? "Practice space" : "My workspace"}</span>
             <ChevronRight size={12} />
             <strong>{page}</strong>
           </div>
           <div className="topbar-right">
             <span className="saved-state">
               <span className="status-dot" />
-              {!ready
+              {practice ? "Practice · changes are temporary" : !ready
                 ? "Opening workspace"
                 : storageError
                   ? "Saved data needs attention"
@@ -944,7 +1026,7 @@ export default function SelmioApp() {
             <div>
               <div className="heading-eyebrow">
                 <span className="little-sun">✳</span>
-                {page === "Overview"
+                {page === "Scenarios" ? "A LITTLE PRACTICE. A LOT MORE CLARITY." : page === "Overview"
                   ? "A CLEARER PICTURE, A CALMER YOU"
                   : page === "Your plan"
                     ? "MAKE SPACE FOR WHAT MATTERS"
@@ -955,7 +1037,7 @@ export default function SelmioApp() {
                         : "THE LITTLE THINGS ADD UP"}
               </div>
               <h1>
-                {page === "Overview" ? (
+                {page === "Scenarios" ? "Try a little real life." : page === "Overview" ? (
                   <>
                     A little more breathing room<span>.</span>
                   </>
@@ -970,7 +1052,7 @@ export default function SelmioApp() {
                 )}
               </h1>
               <p>
-                {page === "Overview"
+                {page === "Scenarios" ? "Ten guided scenarios. Fictional money. Real decisions you can explore." : page === "Overview"
                   ? "See where you stand. Know what fits. Get on with living."
                   : page === "Your plan"
                     ? "Protect the essentials and make room for the things you love."
@@ -994,12 +1076,16 @@ export default function SelmioApp() {
                 <strong>Web preview.</strong> Bank linking runs in the local app.
                 Your workspace stays in this browser.
               </span>
-              <a href="https://github.com/nimeshbuilds/selmio#run" target="_blank" rel="noreferrer">
-                Get the local app <ArrowUpRight size={14} />
-              </a>
+              <div className="preview-actions">
+                <button onClick={() => navigate("Scenarios")}>Try 10 scenarios <ArrowRight size={14} /></button>
+                <a href="https://github.com/nimeshbuilds/selmio#run" target="_blank" rel="noreferrer">
+                  Get the local app <ArrowUpRight size={14} />
+                </a>
+              </div>
             </div>
           )}
-          {storageError && (
+          <ScenarioCoach />
+          {storageError && !practice && (
             <div className="storage-warning" role="alert">
               <CircleHelp size={18} />
               <div>
@@ -1020,7 +1106,7 @@ export default function SelmioApp() {
               </div>
             </div>
           )}
-          {workspace.mode === "demo" && (
+          {workspace.mode === "demo" && !practice && page !== "Scenarios" && (
             <div className="demo-banner">
               <span>
                 <Sparkles size={15} />
@@ -1046,6 +1132,7 @@ export default function SelmioApp() {
               ))}
             </details>
           ) : null}
+          {page === "Scenarios" && <ScenarioGallery scenarios={BUDGET_SCENARIOS} exploredIds={exploredIds} onStart={startScenario} />}
           {page === "Overview" && (
             <>
               <div className="hero-grid">
@@ -1604,9 +1691,9 @@ export default function SelmioApp() {
                   <Fingerprint size={23} />
                 </div>
                 <p>
-                  Your workspace is saved in this browser on this device. Export
-                  regular backups; clearing browser storage removes this copy.
-                  Local browser storage is not encrypted.
+                  {practice
+                    ? "This practice workspace is temporary. Export and restore sample backups to try the recovery flow. Your personal workspace stays separate."
+                    : "Your workspace is saved in this browser on this device. Export regular backups; clearing browser storage removes this copy. Local browser storage is not encrypted."}
                 </p>
                 <div className="setting-row">
                   <div>
@@ -1615,10 +1702,15 @@ export default function SelmioApp() {
                       Accounts, history, commitments, and preferences.
                     </span>
                   </div>
-                  <button className="btn secondary" onClick={backup}>
-                    <Download size={15} />
-                    Export
-                  </button>
+                  <div className="setting-actions">
+                    {practice && activeScenario?.id === "backup-restore" && (
+                      <button className="btn secondary" onClick={() => { setPracticeCopy({ sessionId: practice.sessionId, workspace: structuredClone(workspace) }); notify("Temporary practice copy saved. Export a private file for a durable backup."); }}>Save practice copy</button>
+                    )}
+                    <button className="btn secondary" onClick={backup}>
+                      <Download size={15} />
+                      Export
+                    </button>
+                  </div>
                 </div>
                 <div className="setting-row">
                   <div>
@@ -1627,24 +1719,30 @@ export default function SelmioApp() {
                       Replace this workspace with a Selmio JSON backup.
                     </span>
                   </div>
-                  <button
-                    className="btn secondary"
-                    onClick={() => restoreRef.current?.click()}
-                  >
-                    <FileUp size={15} />
-                    Restore
-                  </button>
+                  <div className="setting-actions">
+                    {practice && activeScenario?.id === "backup-restore" && (
+                      <button className="btn secondary" disabled={practiceCopy?.sessionId !== practice.sessionId} onClick={() => { if (practiceCopy?.sessionId !== practice.sessionId) return; setWorkspace(validateWorkspace(structuredClone(practiceCopy.workspace))); notify("Practice copy restored. Your personal workspace is unchanged."); }}>Restore practice copy</button>
+                    )}
+                    <button
+                      className="btn secondary"
+                      onClick={() => restoreRef.current?.click()}
+                    >
+                      <FileUp size={15} />
+                      Restore
+                    </button>
+                  </div>
                 </div>
                 <div className="setting-row">
                   <div>
-                    <strong>Explore the demo</strong>
+                    <strong>{practice ? "Restart this scenario" : "Explore the demo"}</strong>
                     <span>
-                      Switch to sample money. Export your current work first.
+                      {practice ? "Reset only this exercise to its starting values." : "Switch to sample money. Export your current work first."}
                     </span>
                   </div>
                   <button
                     className="btn secondary"
                     onClick={() => {
+                      if (practice) { startScenario(practice.scenarioId); return; }
                       if (
                         workspace.mode === "personal" &&
                         !window.confirm(
@@ -1662,7 +1760,7 @@ export default function SelmioApp() {
                       );
                     }}
                   >
-                    Open demo
+                    {practice ? "Restart scenario" : "Open demo"}
                   </button>
                 </div>
               </section>
@@ -1719,11 +1817,11 @@ export default function SelmioApp() {
           </footer>
         </main>
       </div>
-      <button className="floating-whatif" onClick={() => setModal("decision")}>
+      {!practice && page !== "Scenarios" && <button className="floating-whatif" onClick={() => setModal("decision")}>
         <Sparkles size={17} />
         Can I afford it?
         <ArrowUpRight size={14} />
-      </button>
+      </button>}
       {toast && (
         <div className="toast" role="status">
           <CheckCheck size={17} />
@@ -2326,6 +2424,8 @@ export default function SelmioApp() {
           {workspace.accounts.length ? (
             <ImportForm
               accounts={workspace.accounts}
+              sampleCsv={activeScenario?.sampleCsv}
+              initialAccountId={accountId}
               onImport={(text, account) => {
                 const result = importTransactionsCsv(workspace, text, account);
                 if (result.errors.length)
@@ -2360,6 +2460,7 @@ export default function SelmioApp() {
         </Modal>
       )}
     </div>
+    </ScenarioGuideContext.Provider>
   );
 }
 
@@ -2590,11 +2691,15 @@ function CommitmentForm({
 function ImportForm({
   accounts,
   onImport,
+  sampleCsv,
+  initialAccountId,
 }: {
   accounts: Account[];
   onImport: (text: string, accountId: string) => void;
+  sampleCsv?: string;
+  initialAccountId?: string;
 }) {
-  const [account, setAccount] = useState(accounts[0]?.id ?? ""),
+  const [account, setAccount] = useState(initialAccountId || accounts[0]?.id || ""),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
   const read = async (file?: File) => {
@@ -2633,6 +2738,11 @@ function ImportForm({
           ))}
         </select>
       </label>
+      {sampleCsv && (
+        <button className="btn primary" onClick={() => { setError(""); try { onImport(sampleCsv, account); } catch (error) { setError(error instanceof Error ? error.message : "Could not import the sample."); } }}>
+          <FlaskConical size={17} /> Use sample statement
+        </button>
+      )}
       <label className="file-drop">
         <FileUp size={30} />
         <strong>

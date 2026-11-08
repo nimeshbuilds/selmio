@@ -10,6 +10,8 @@ Selmio is an MIT-licensed local budgeting application. It makes dated spending d
 
 Try [Selmio on GitHub Pages](https://nimeshbuilds.github.io/selmio/). The browser version includes the budgeting tools, manual accounts, CSV import, and JSON backups. Workspaces stay in your browser and are not encrypted. Bank linking requires the local app and its private connector.
 
+Choose **Scenarios** or **Try 10 scenarios** for guided practice with fictional money. Each walkthrough explains what to do, opens the actual controls, and describes the result to look for. Practice workspaces stay separate from your personal workspace; **Exit practice** returns to your own budget. Practice changes reset when you reload, while the list of walkthroughs you mark explored stays in this browser.
+
 The [Pages workflow](.github/workflows/pages.yml) checks and publishes the static app after pushes to `main`. To build and preview the same static version locally:
 
 ```sh
