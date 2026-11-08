@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "mode": "demo",
+  "accounts": [
+    {
+      "id": "checking",
+      "name": "Everyday checking",
+      "institution": "Northstar Bank",
+      "type": "checking",
+      "balanceCents": 684200,
+      "lastUpdated": "2026-11-07T09:42:00"
+    },
+    {
+      "id": "savings",
+      "name": "Rainy day fund",
+      "institution": "Northstar Bank",
+      "type": "savings",
+      "balanceCents": 1245000,
+      "lastUpdated": "2026-11-08T12:00:00.000Z"
+    },
+    {
+      "id": "credit",
+      "name": "Everyday card",
+      "institution": "Northstar Card",
+      "type": "credit",
+      "balanceCents": -138450,
+      "lastUpdated": "2026-11-07T09:42:00"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "demo-01",
+      "accountId": "checking",
+      "date": "2026-11-06",
+      "merchant": "Whole Foods Market",
+      "category": "Groceries",
+      "amountCents": -8426,
+      "kind": "expense",
+      "status": "posted"
+    },
+    {
+      "id": "demo-02",
+      "accountId": "credit",
+      "date": "2026-11-06",
+      "merchant": "Blue Bottle Coffee",
+      "category": "Food & drink",
+      "amountCents": -650,
+      "kind": "expense",
+      "status": "posted"
+    },
+    {
+      "id": "demo-03",
+      "accountId": "checking",
+      "date": "2026-11-05",
+      "merchant": "Salary · Acme Studio",
+      "category": "Income",
+      "amountCents": 320000,
+      "kind": "income",
+      "status": "posted"
+    },
+    {
+      "id": "demo-04",
+      "accountId": "checking",
+      "date": "2026-11-05",
+      "merchant": "Transfer to rainy day fund",
+      "category": "Transfer",
+      "amountCents": -50000,
+      "kind": "transfer",
+      "status": "posted"
+    },
+    {
+      "id": "demo-05",
+      "accountId": "savings",
+      "date": "2026-11-05",
+      "merchant": "Transfer from checking",
+      "category": "Transfer",
+      "amountCents": 50000,
+      "kind": "transfer",
+      "status": "posted"
+    },
+    {
+      "id": "demo-06",
+      "accountId": "credit",
+      "date": "2026-11-04",
+      "merchant": "City transit",
+      "category": "Transport",
+      "amountCents": -3500,
+      "kind": "expense",
+      "status": "posted"
+    },
+    {
+      "id": "demo-07",
+      "accountId": "checking",
+      "date": "2026-11-04",
+      "merchant": "Everlane",
+      "category": "Shopping",
+      "amountCents": -12800,
+      "kind": "expense",
+      "status": "posted"
+    },
+    {
+      "id": "demo-08",
+      "accountId": "checking",
+      "date": "2026-11-03",
+      "merchant": "Everlane · authorization",
+      "category": "Shopping",
+      "amountCents": -12800,
+      "kind": "expense",
+      "status": "pending"
+    },
+    {
+      "id": "demo-09",
+      "accountId": "checking",
+      "date": "2026-11-03",
+      "merchant": "Spotify",
+      "category": "Subscriptions",
+      "amountCents": -1199,
+      "kind": "expense",
+      "status": "posted"
+    },
+    {
+      "id": "demo-10",
+      "accountId": "checking",
+      "date": "2026-11-02",
+      "merchant": "Greenline Energy",
+      "category": "Utilities",
+      "amountCents": -9734,
+      "kind": "expense",
+      "status": "posted"
+    },
+    {
+      "id": "demo-11",
+      "accountId": "checking",
+      "date": "2026-11-01",
+      "merchant": "Oak Street Apartments",
+      "category": "Housing",
+      "amountCents": -185000,
+      "kind": "expense",
+      "status": "posted"
+    }
+  ],
+  "commitments": [
+    {
+      "id": "insurance",
+      "name": "Car insurance",
+      "amountCents": 16200,
+      "dueDate": "2026-11-09",
+      "accountId": "checking",
+      "kind": "bill",
+      "confirmed": true
+    },
+    {
+      "id": "card-payment",
+      "name": "Card statement payment",
+      "amountCents": 138450,
+      "dueDate": "2026-11-12",
+      "accountId": "checking",
+      "kind": "bill",
+      "confirmed": true
+    },
+    {
+      "id": "groceries",
+      "name": "Groceries & essentials",
+      "amountCents": 42000,
+      "dueDate": "2026-11-15",
+      "accountId": "checking",
+      "kind": "bill",
+      "confirmed": true
+    },
+    {
+      "id": "payday",
+      "name": "Expected salary",
+      "amountCents": 320000,
+      "dueDate": "2026-11-20",
+      "accountId": "checking",
+      "kind": "income",
+      "confirmed": true
+    },
+    {
+      "id": "internet",
+      "name": "Home internet",
+      "amountCents": 7500,
+      "dueDate": "2026-11-21",
+      "accountId": "checking",
+      "kind": "bill",
+      "confirmed": true
+    },
+    {
+      "id": "savings-goal",
+      "name": "Travel fund contribution",
+      "amountCents": 60000,
+      "dueDate": "2026-11-24",
+      "accountId": "checking",
+      "kind": "goal",
+      "confirmed": true
+    },
+    {
+      "id": "rent-reserve",
+      "name": "December rent reserve",
+      "amountCents": 185000,
+      "dueDate": "2026-11-28",
+      "accountId": "checking",
+      "kind": "goal",
+      "confirmed": true
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "everlane-hold",
+      "title": "One purchase or two?",
+      "detail": "A $128 authorization and a posted Everlane charge may describe the same purchase. The posted charge is already in the opening balance; only a possible second charge is additional exposure.",
+      "amountCents": 12800,
+      "accountId": "checking",
+      "date": "2026-11-08",
+      "options": [
+        {
+          "id": "duplicate",
+          "label": "Same purchase",
+          "detail": "The authorization is replaced by the posted charge. No additional cash leaves the account.",
+          "additionalOutflowCents": 0
+        },
+        {
+          "id": "distinct",
+          "label": "Two purchases",
+          "detail": "The authorization is a separate purchase that may still settle for $128.",
+          "additionalOutflowCents": 12800
+        }
+      ]
+    }
+  ],
+  "bufferCents": 150000
+}

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Selmio — Know what fits.</title>
+  <desc id="desc">A warm ivory Selmio brand card with a forest-green wordmark, the line Your money. A little more room., and an abstract flowing spending curve.</desc>
+  <defs>
+    <clipPath id="canvas"><rect width="1200" height="630" rx="0"/></clipPath>
+    <clipPath id="curve-window"><rect x="775" y="175" width="352" height="322" rx="32"/></clipPath>
+  </defs>
+  <g clip-path="url(#canvas)">
+    <rect width="1200" height="630" fill="#F6F6F0"/>
+    <circle cx="1137" cy="160" r="204" fill="#E9E6F2"/>
+    <circle cx="1047" cy="513" r="163" fill="#DDEFAB"/>
+
+    <g transform="translate(76 62)">
+      <rect width="64" height="64" rx="20" fill="#27483C"/>
+      <path d="M17 32c0-10 9-17 20-14l11 3-16 12-15-1Z" fill="#DDEFAB"/>
+      <path d="M47 32c0 10-9 17-20 14l-11-3 16-12 15 1Z" fill="#DDEFAB"/>
+      <path d="m17 32 15-1 16-10-16 14-16 8 16-12-15 1Z" fill="#A9C47F"/>
+    </g>
+    <text x="157" y="111" font-family="Manrope, Avenir Next, Arial, sans-serif" font-size="49" font-weight="650" letter-spacing="-3" fill="#27483C">selmio</text>
+    <text x="1126" y="102" text-anchor="end" font-family="DM Sans, Avenir Next, Arial, sans-serif" font-size="16" font-weight="500" letter-spacing="0.3" fill="#27483C">A calmer spending plan</text>
+
+    <text x="72" y="277" font-family="Manrope, Avenir Next, Arial, sans-serif" font-size="92" font-weight="650" letter-spacing="-5.3" fill="#263A32">Know what</text>
+    <text x="72" y="374" font-family="Manrope, Avenir Next, Arial, sans-serif" font-size="92" font-weight="650" letter-spacing="-5.3" fill="#263A32">fits.</text>
+    <text x="77" y="441" font-family="DM Sans, Avenir Next, Arial, sans-serif" font-size="26" font-weight="400" letter-spacing="-0.6" fill="#27483C">Your money. A little more room.</text>
+
+    <rect x="775" y="175" width="352" height="322" rx="32" fill="#FFFFFF" fill-opacity="0.82" stroke="#27483C" stroke-opacity="0.10"/>
+    <g clip-path="url(#curve-window)">
+      <path d="M775 427C828 427 817 344 871 344C925 344 912 391 963 391C1016 391 1006 290 1058 290C1086 290 1105 314 1127 314V497H775V427Z" fill="#DDEFAB"/>
+      <path d="M775 389C828 389 817 306 871 306C925 306 912 353 963 353C1016 353 1006 252 1058 252C1086 252 1105 276 1127 276" stroke="#27483C" stroke-width="5" stroke-linecap="round"/>
+      <path d="M775 427C828 427 817 344 871 344C925 344 912 391 963 391C1016 391 1006 290 1058 290C1086 290 1105 314 1127 314" stroke="#27483C" stroke-opacity="0.18" stroke-width="2" stroke-dasharray="4 7"/>
+      <path d="M806 464H1096" stroke="#27483C" stroke-opacity="0.14"/>
+      <path d="M827 460V468M893 460V468M959 460V468M1025 460V468M1091 460V468" stroke="#27483C" stroke-opacity="0.2"/>
+    </g>
+    <circle cx="963" cy="353" r="12" fill="#F6F6F0"/>
+    <circle cx="963" cy="353" r="6" fill="#CF785F"/>
+    <rect x="1017" y="222" width="82" height="54" rx="18" fill="#27483C"/>
+    <path d="m1044 250 10 10 18-21" stroke="#DDEFAB" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <path d="M77 536H1127" stroke="#27483C" stroke-opacity="0.14"/>
+    <text x="77" y="576" font-family="DM Sans, Avenir Next, Arial, sans-serif" font-size="17" font-weight="400" letter-spacing="-0.2" fill="#27483C">A local workspace for thoughtful spending.</text>
+    <text x="1127" y="576" text-anchor="end" font-family="DM Sans, Avenir Next, Arial, sans-serif" font-size="17" font-weight="500" fill="#27483C">Open source</text>
+  </g>
+</svg>

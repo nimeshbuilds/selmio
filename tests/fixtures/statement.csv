@@ -1,0 +1,4 @@
+id,date,description,amount,category,kind,status
+qa-coffee,2026-11-07,"Coffee, downtown",-4.50,Dining,expense,posted
+qa-pay,2026-11-06,Example paycheck,500.00,Income,income,posted
+qa-card,2026-11-05,Card payment,-100.00,Transfers,transfer,posted

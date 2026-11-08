@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Selmio app icon</title>
+  <desc id="desc">Two pistachio shapes meet inside a rounded forest-green square.</desc>
+  <rect width="512" height="512" rx="160" fill="#27483C"/>
+  <g transform="scale(8)">
+    <path d="M17 32c0-10 9-17 20-14l11 3-16 12-15-1Z" fill="#DDEFAB"/>
+    <path d="M47 32c0 10-9 17-20 14l-11-3 16-12 15 1Z" fill="#DDEFAB"/>
+    <path d="m17 32 15-1 16-10-16 14-16 8 16-12-15 1Z" fill="#A9C47F"/>
+  </g>
+</svg>
